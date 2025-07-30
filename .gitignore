@@ -1,0 +1,45 @@
+# Ignorar archivos de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Ignorar entornos virtuales
+env/
+venv/
+ENV/
+.venv/
+
+# Ignorar archivos de entorno
+.env
+
+# Ignorar imágenes
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.bmp
+*.webp
+
+# Ignorar configuraciones de Bootstrap descargadas localmente
+bootstrap/
+bootstrap.min.css
+bootstrap.min.js
+bootstrap.bundle.min.js
+*.map
+
+# Ignorar archivos temporales / del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar editores comunes
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+*/uploads
+*/instance
+*/node_modules
