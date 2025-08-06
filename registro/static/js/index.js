@@ -7,12 +7,14 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
   const modal = document.getElementById(modalId);
 
   let isDrawing = false;
+  let hasDrawn = false;
 
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let hasDrawn= false;
   }
 
   modal.addEventListener('shown.bs.modal', () => {
@@ -31,8 +33,10 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     e.preventDefault();
     const pos = getTouchPos(e);
     isDrawing = true;
+    let hasDrawn= true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
+    
   });
 
   canvas.addEventListener("touchmove", (e) => {
@@ -50,11 +54,23 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
 
   btnBorrar.addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let hasDrawn = false;
   });
 
   btnGuardar.addEventListener("click", () => {
-    const dataURL = canvas.toDataURL("image/png");
-    input.value = dataURL;
+    if (!hasDrawn){
+      mostrarToast("Ingrese la firma")
+      return;
+    }else{
+      const dataURL = canvas.toDataURL("image/png");
+      input.value = dataURL;
+
+      // cerrar modal manualmente si todo fue bien
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
   });
 }
 
