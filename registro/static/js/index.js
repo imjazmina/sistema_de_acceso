@@ -129,8 +129,20 @@ function verificarAnteriores(actualIndex) {
       if (campoElemento) campoElemento.focus();
       return false;
     }
+    if (campoId === 'email' && !validarCorreo(obtenerValor(campoId))) {
+      mostrarToast("Ingrese un correo electrónico válido.");
+      const campoElemento = document.getElementById(campoId);
+      if (campoElemento) campoElemento.focus();
+      return false;
+    }
   }
   return true;
+} 
+
+//Validar campo correo
+function validarCorreo (email){
+  const mailReq = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return mailReq.test(email)
 }
 
 // Validar orden de ingreso para campos normales
@@ -138,7 +150,6 @@ camposOrden.forEach((campoId, index) => {
   if (['firmavisitante', 'firmaautorizacion', 'autorizante'].includes(campoId)) {
     return; // ya están manejados por separado
   }
-
   const campo = document.getElementById(campoId);
   if (campo) {
     campo.addEventListener('focus', () => {
@@ -146,7 +157,6 @@ camposOrden.forEach((campoId, index) => {
     });
   }
 });
-
 
 // Abrir modal visitante solo si validación pasa
 document.getElementById('btnAbrirModalVisitante').addEventListener('click', () => {
@@ -165,6 +175,8 @@ document.getElementById('btnAbrirModalAutorizante').addEventListener('click', ()
   const modalAutorizante = new bootstrap.Modal(document.getElementById('modalAutorizante'));
   modalAutorizante.show();
 });
+
+
 
 // Validar selección de radios autorizante
 const radiosAutorizante = document.getElementsByName('autorizante');
@@ -261,6 +273,6 @@ if (btnGuardar) {
   btnGuardar.addEventListener("click", () => {
     clearTimeout(inactividadTimeout);
     temporizadorIniciado = false;
-    console.log("✅ Formulario guardado. Temporizador cancelado.");
+
   });
 }
