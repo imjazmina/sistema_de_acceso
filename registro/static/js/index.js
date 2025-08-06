@@ -176,7 +176,7 @@ function mostrarToast(mensaje) {
   const toastId = `toast-${Date.now()}`;
 
   const toastHTML = `
-    <div id="${toastId}" class="toast align-items-center position-fixed bg-warning top-0 end-0 p-3 text-white border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="${toastId}" class="toast align-items-center position-fixed bg-warning top-1 end-0 p-2 text-white border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="d-flex">
         <div class="toast-body">${mensaje}</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>

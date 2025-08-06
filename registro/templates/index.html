@@ -31,7 +31,7 @@
               <div class="toast-body">
                 {{ message }}
               </div>
-              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              <button type="button" class="btn-close btn-close-white m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
           </div>
         {% endfor %}
@@ -40,8 +40,7 @@
   </div>
 </div>
   <!-- Bootstrap Toast Container Front-->
-   <!-- En tu HTML -->
-<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+<div class="toast-container position-fixed top-0 end-0 p-2" id="toast-container"></div>
 
   <div class="container col-6">
     <form method="post" action="/crear-acceso" enctype="multipart/form-data">
