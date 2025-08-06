@@ -108,7 +108,7 @@ function verificarAnteriores(actualIndex) {
   for (let i = 0; i < actualIndex; i++) {
     const campoId = camposOrden[i];
     if (!obtenerValor(campoId)) {
-      alert(`Por favor, complete primero el campo "${mostrarNombreCampo(campoId)}"`);
+      mostrarToast(`Por favor, complete primero el campo "${mostrarNombreCampo(campoId)}"`);//cambiar por toast
       const campoElemento = document.getElementById(campoId);
       if (campoElemento) campoElemento.focus();
       return false;
@@ -161,7 +161,7 @@ radiosAutorizante.forEach(radio => {
   });
 });
 
-// Mostrar toasts con bootstrap
+// Mostrar toasts con bootstrap back
 document.addEventListener('DOMContentLoaded', function () {
   const toastElList = [].slice.call(document.querySelectorAll('.toast'));
   toastElList.forEach(toastEl => {
@@ -169,6 +169,31 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.show();
   });
 });
+
+//mostrar toast front
+function mostrarToast(mensaje) {
+  const toastContainer = document.getElementById('toast-container');
+  const toastId = `toast-${Date.now()}`;
+
+  const toastHTML = `
+    <div id="${toastId}" class="toast align-items-center position-fixed bg-warning top-0 end-0 p-3 text-white border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">${mensaje}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `;
+
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  const newToast = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(newToast, { delay: 4000 });
+  toast.show();
+
+  newToast.addEventListener('hidden.bs.toast', () => {
+    newToast.remove();
+  });
+}
+
 
 // Función para limpiar formulario y canvas
 function limpiarFormulario() {
@@ -186,4 +211,40 @@ function limpiarFormulario() {
     const ctx = canvaAutorizante.getContext("2d");
     ctx.clearRect(0, 0, canvaAutorizante.width, canvaAutorizante.height);
   }
+}
+
+const temporizador = 1*60*1000;
+let inactividadTimeout;
+let temporizadorIniciado = false;
+
+
+function limpiarmemoria(event) {
+
+  if (event.target.id !== "name" || temporizadorIniciado) return;
+
+  const valor = event.target.value.trim();
+  if (valor !== "") {
+    temporizadorIniciado = true;
+
+    inactividadTimeout = setTimeout(() => {
+      mostrarToast("Se ha terminado el tiempo. El formulario será reiniciado.");
+      limpiarFormulario();
+      temporizadorIniciado = false;
+    }, temporizador);
+  }
+}
+
+const elemento = document.getElementById("name");
+if (elemento) {
+  elemento.addEventListener("input", limpiarmemoria);
+}
+
+
+const btnGuardar = document.getElementById("btnGuardar");
+if (btnGuardar) {
+  btnGuardar.addEventListener("click", () => {
+    clearTimeout(inactividadTimeout);
+    temporizadorIniciado = false;
+    console.log("✅ Formulario guardado. Temporizador cancelado.");
+  });
 }

@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <!-- Bootstrap Toast Container -->
+  <!-- Bootstrap Toast Container Back-->
 <div aria-live="polite" aria-atomic="true" class="position-relative">
   <div class="toast-container position-fixed top-0 end-0 p-3">
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -39,6 +39,9 @@
     {% endwith %}
   </div>
 </div>
+  <!-- Bootstrap Toast Container Front-->
+   <!-- En tu HTML -->
+<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
 
   <div class="container col-6">
     <form method="post" action="/crear-acceso" enctype="multipart/form-data">
