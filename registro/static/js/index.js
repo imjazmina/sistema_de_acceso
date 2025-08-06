@@ -7,12 +7,14 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
   const modal = document.getElementById(modalId);
 
   let isDrawing = false;
+  let hasDrawn = false;
 
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let hasDrawn= false;
   }
 
   modal.addEventListener('shown.bs.modal', () => {
@@ -31,8 +33,10 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     e.preventDefault();
     const pos = getTouchPos(e);
     isDrawing = true;
+    let hasDrawn= true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
+    
   });
 
   canvas.addEventListener("touchmove", (e) => {
@@ -50,11 +54,23 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
 
   btnBorrar.addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let hasDrawn = false;
   });
 
   btnGuardar.addEventListener("click", () => {
-    const dataURL = canvas.toDataURL("image/png");
-    input.value = dataURL;
+    if (!hasDrawn){
+      mostrarToast("Ingrese la firma")
+      return;
+    }else{
+      const dataURL = canvas.toDataURL("image/png");
+      input.value = dataURL;
+
+      // cerrar modal manualmente si todo fue bien
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    }
   });
 }
 
@@ -108,13 +124,25 @@ function verificarAnteriores(actualIndex) {
   for (let i = 0; i < actualIndex; i++) {
     const campoId = camposOrden[i];
     if (!obtenerValor(campoId)) {
-      alert(`Por favor, complete primero el campo "${mostrarNombreCampo(campoId)}"`);
+      mostrarToast(`Por favor, complete primero el campo "${mostrarNombreCampo(campoId)}"`);//cambiar por toast
+      const campoElemento = document.getElementById(campoId);
+      if (campoElemento) campoElemento.focus();
+      return false;
+    }
+    if (campoId === 'email' && !validarCorreo(obtenerValor(campoId))) {
+      mostrarToast("Ingrese un correo electrónico válido.");
       const campoElemento = document.getElementById(campoId);
       if (campoElemento) campoElemento.focus();
       return false;
     }
   }
   return true;
+} 
+
+//Validar campo correo
+function validarCorreo (email){
+  const mailReq = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return mailReq.test(email)
 }
 
 // Validar orden de ingreso para campos normales
@@ -122,7 +150,6 @@ camposOrden.forEach((campoId, index) => {
   if (['firmavisitante', 'firmaautorizacion', 'autorizante'].includes(campoId)) {
     return; // ya están manejados por separado
   }
-
   const campo = document.getElementById(campoId);
   if (campo) {
     campo.addEventListener('focus', () => {
@@ -130,7 +157,6 @@ camposOrden.forEach((campoId, index) => {
     });
   }
 });
-
 
 // Abrir modal visitante solo si validación pasa
 document.getElementById('btnAbrirModalVisitante').addEventListener('click', () => {
@@ -150,6 +176,8 @@ document.getElementById('btnAbrirModalAutorizante').addEventListener('click', ()
   modalAutorizante.show();
 });
 
+
+
 // Validar selección de radios autorizante
 const radiosAutorizante = document.getElementsByName('autorizante');
 radiosAutorizante.forEach(radio => {
@@ -161,7 +189,7 @@ radiosAutorizante.forEach(radio => {
   });
 });
 
-// Mostrar toasts con bootstrap
+// Mostrar toasts con bootstrap back
 document.addEventListener('DOMContentLoaded', function () {
   const toastElList = [].slice.call(document.querySelectorAll('.toast'));
   toastElList.forEach(toastEl => {
@@ -169,6 +197,31 @@ document.addEventListener('DOMContentLoaded', function () {
     toast.show();
   });
 });
+
+//mostrar toast front
+function mostrarToast(mensaje) {
+  const toastContainer = document.getElementById('toast-container');
+  const toastId = `toast-${Date.now()}`;
+
+  const toastHTML = `
+    <div id="${toastId}" class="toast align-items-center position-fixed bg-warning top-1 end-0 p-2 text-white border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">${mensaje}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  `;
+
+  toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+  const newToast = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(newToast, { delay: 4000 });
+  toast.show();
+
+  newToast.addEventListener('hidden.bs.toast', () => {
+    newToast.remove();
+  });
+}
+
 
 // Función para limpiar formulario y canvas
 function limpiarFormulario() {
@@ -186,4 +239,40 @@ function limpiarFormulario() {
     const ctx = canvaAutorizante.getContext("2d");
     ctx.clearRect(0, 0, canvaAutorizante.width, canvaAutorizante.height);
   }
+}
+
+const temporizador = 1*60*1000;
+let inactividadTimeout;
+let temporizadorIniciado = false;
+
+
+function limpiarmemoria(event) {
+
+  if (event.target.id !== "name" || temporizadorIniciado) return;
+
+  const valor = event.target.value.trim();
+  if (valor !== "") {
+    temporizadorIniciado = true;
+
+    inactividadTimeout = setTimeout(() => {
+      mostrarToast("Se ha terminado el tiempo. El formulario será reiniciado.");
+      limpiarFormulario();
+      temporizadorIniciado = false;
+    }, temporizador);
+  }
+}
+
+const elemento = document.getElementById("name");
+if (elemento) {
+  elemento.addEventListener("input", limpiarmemoria);
+}
+
+
+const btnGuardar = document.getElementById("btnGuardar");
+if (btnGuardar) {
+  btnGuardar.addEventListener("click", () => {
+    clearTimeout(inactividadTimeout);
+    temporizadorIniciado = false;
+
+  });
 }

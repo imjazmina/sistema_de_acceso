@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <!-- Bootstrap Toast Container -->
+  <!-- Bootstrap Toast Container Back-->
 <div aria-live="polite" aria-atomic="true" class="position-relative">
   <div class="toast-container position-fixed top-0 end-0 p-3">
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -31,7 +31,7 @@
               <div class="toast-body">
                 {{ message }}
               </div>
-              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              <button type="button" class="btn-close btn-close-white m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
           </div>
         {% endfor %}
@@ -39,14 +39,16 @@
     {% endwith %}
   </div>
 </div>
+  <!-- Bootstrap Toast Container Front-->
+<div class="toast-container position-fixed top-0 end-0 p-2" id="toast-container"></div>
 
   <div class="container col-6">
-    <form method="post" action="/crear-acceso" enctype="multipart/form-data">
+    <form method="post" action="/crear-acceso" enctype="multipart/form-data" autocomplete="off">
       <h2 class="mb-4">REGISTRO DE ACCESO A LA SALA DE SERVIDORES</h2>
 
       <div class="mb-3">
         <label for="name" class="form-label">Nombre completo</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+        <input type="text" class="form-control" id="name" name="name" required >
       </div>
 
       <div class="mb-3">
@@ -92,7 +94,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary btnBorrar"id="borrarVisit">Borrar</button> 
-                  <button type="button" class="btn btn-primary btnGuardar"  id="guardarVisit" data-bs-dismiss="modal">Hecho</button>
+                  <button type="button" class="btn btn-primary btnGuardar"  id="guardarVisit">Hecho</button>
                 </div>
               </div>
             </div>
@@ -130,7 +132,7 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary btnBorrar "id="borrarAutorizante">Borrar</button> 
-                  <button type="button" class="btn btn-primary btnGuardar"  id="guardarAutorizante" data-bs-dismiss="modal">Hecho</button>
+                  <button type="button" class="btn btn-primary btnGuardar"  id="guardarAutorizante">Hecho</button>
                 </div>
               </div>
             </div>
