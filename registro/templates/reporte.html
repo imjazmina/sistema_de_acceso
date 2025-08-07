@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Accesos</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #000; padding: 6px; }
+    th { background-color: #f0f0f0; }
+    img.firma { width: 120px; height: auto; border: 1px solid #ccc; }
+    h2 { text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>REPORTE DE ACCESOS</h2>
+  <table class="table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Correo</th>
+      <th>Fecha</th>
+      <th>Hora Entrada</th>
+      <th>Hora Salida</th>
+      <th>Motivo</th>
+      <th>Autorizante</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in registro %}
+    <tr>
+      <td>{{ r[0] }}</td>
+      <td>{{ r[1] }}</td>
+      <td>{{ r[2] }}</td>
+      <td>{{ r[3] }}</td>
+      <td>{{ r[4] }}</td>
+      <td>{{ r[5] }}</td>
+      <td>{{ r[6] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</body>
+</html>

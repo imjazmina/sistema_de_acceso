@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, url_for, flash
+from flask import Flask, request, redirect, render_template, url_for, flash, make_response
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -6,6 +6,7 @@ import base64
 from datetime import datetime 
 import psycopg2
 from dotenv import load_dotenv  
+import pdfkit
 
 load_dotenv()
 
@@ -33,9 +34,8 @@ def home():
         accesos = cur.fetchall()
         cur.close()
         conn.close()
-        print("Exito al conectarse a la BD", )
     except Exception as e:
-        print("Error al conectarse a la base de datos {e}", "Warning") 
+        flash("Error de conexion", "Warning") 
     
     return render_template("index.html", accesos=accesos)
 
@@ -110,11 +110,41 @@ def crear_acceso():
         conn.close()
         flash("Acceso guardado", "success")
     except Exception as e:
-        print("{e}")
         flash(f"Error al procesar el acceso {e}" , "danger")
    
     return redirect("/")
 
-# Inicializa la base de datos si no existe
+
+#ruta para generar pdf de los registros
+@app.route("/crear-reporte", methods = ["GET"])
+def generar_reporte():
+    try:
+        conn = psycopg2.connect(
+                database = os.getenv("DB_NAME"),
+                user = os.getenv("DB_USER"),
+                password = os.getenv("DB_PASSWORD"),
+                host = os.getenv("DB_HOST"),
+                port = os.getenv("DB_PORT")
+        )
+        cur = conn.cursor()
+        cur.execute("select nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante from acceso")
+        registro = cur.fetchall()
+        cur.close()
+        conn.close()
+        #renderiza(?) el template html con los datos
+        rendered_html = render_template("reporte.html", registro = registro)
+
+        #configurar el whtmltopdf
+        config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+        pdf = pdfkit.from_string(rendered_html, False, configuration=config)
+
+        response = make_response(pdf)
+        response.headers["Content-Type"] = "application/pdf"
+        response.headers["Content-Disposition"] = "inline; filename=registro_acceso.pdf"
+        return response 
+    except Exception as e:
+        flash("Ocurrio un error al generar el reporte", "danger")
+        return redirect("/")
+
 if __name__ == "__main__":
     app.run(debug=True)
