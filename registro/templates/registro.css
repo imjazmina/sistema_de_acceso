@@ -1,0 +1,9 @@
+body {
+background-color: #ccc;
+}
+.container, .container-registro {
+background-color: #fff;
+margin: 20px auto;
+padding: 20px;
+border-radius: 8px;
+}
