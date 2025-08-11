@@ -11,7 +11,7 @@
       body {
         background-color: #ccc;
       }
-      .container {
+      .container, table {
         background-color: #fff;
         margin: 20px auto;
         padding: 20px;
@@ -149,11 +149,36 @@
 
         <button type="submit" class="btn btn-primary">Enviar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>  
-        <a href="{{ url_for('generar_reporte') }}" class="btn btn-success" target="_blank">
-      Generar Reporte
-      </a>
-
+        <a href="{{ url_for('generar_reporte') }}" class="btn btn-success" target="_blank">Generar Reporte</a>
+      </div>
       </form>
+  <!--filtrar por fecha-->
+    <table class="col-6">
+          <thead class="text-black text-sm uppercase">
+            <tr>
+              <th class="p-3">Nombre</th>
+              <th class="p-3">Correo</th>
+              <th class="p-3">Fecha</th>
+              <th class="p-3">Hora Entrada</th>
+              <th class="p-3">Hora Salida</th>
+              <th class="p-3">Motivo</th>
+              <th class="p-3">Autorizante</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+             {% for acceso in accesos %}
+             <tr>
+                  <td class="p-3 text-black">{{ acceso[0] }}</td>
+                  <td class="p-3">{{ acceso[1] }}</td>
+                  <td class="p-3">{{ acceso[2] }}</td>
+                  <td class="p-3">{{ acceso[3] }}</td>
+                  <td class="p-3">{{ acceso[4] }}</td>
+                  <td class="p-3">{{ acceso[5] }}</td>
+                  <td class="p-3">{{ acceso[6] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
   </div>
   <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
   </body>

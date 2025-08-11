@@ -18,9 +18,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ruta principal: muestra el formulario y los registros
-@app.route("/", methods=["GET"])
+@app.route('/', methods=["GET"])
 def home():
-    accesos =[]
+    
     try:
         conn = psycopg2.connect(
             database =os.getenv("DB_NAME"), 
@@ -30,8 +30,9 @@ def home():
             port = os.getenv("DB_PORT")
         )
         cur = conn.cursor()
-        cur.execute("select * from acceso")
+        cur.execute("select nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante from acceso")
         accesos = cur.fetchall()
+        print(accesos)
         cur.close()
         conn.close()
     except Exception as e:
@@ -86,10 +87,11 @@ def crear_acceso():
         motivo_ingreso = request.form["motivo"]
         autorizante = request.form["autorizante"]
         observacion = request.form["observacion"]
-
+        # X
         if hora_entrada >= hora_salida:
             flash("La hora de entrada debe ser anterior a la hora de salida", "warning")
-            return redirect(url_for("home"))
+            return render_template('formulario.html',  hora_entrada=hora_entrada, hora_salida=hora_salida)
+
         if not all([name, correo, motivo_ingreso, autorizante]):
             flash("Todos los campos obligatorios deben ser completados", "warning")
             return redirect(url_for("home"))
@@ -113,7 +115,6 @@ def crear_acceso():
         flash(f"Error al procesar el acceso {e}" , "danger")
    
     return redirect("/")
-
 
 #ruta para generar pdf de los registros
 @app.route("/crear-reporte", methods = ["GET"])
