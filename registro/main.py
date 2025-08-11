@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
 import base64
-from datetime import datetime 
+from datetime import datetime, date
 import psycopg2
 from dotenv import load_dotenv  
 import pdfkit
@@ -20,7 +20,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Ruta principal: muestra el formulario y los registros
 @app.route('/', methods=["GET"])
 def home():
-    
+    accesos=[]
+    fecha_inicio = request.args.get("fecha_inicio") 
+    fecha_fin = request.args.get("fecha_fin")
+
     try:
         conn = psycopg2.connect(
             database =os.getenv("DB_NAME"), 
@@ -30,13 +33,19 @@ def home():
             port = os.getenv("DB_PORT")
         )
         cur = conn.cursor()
-        cur.execute("select nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante from acceso")
+        if fecha_inicio and fecha_fin:
+            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha BETWEEN %s AND %s ORDER BY fecha DESC", (fecha_inicio, fecha_fin))
+        else:
+            today = date.today()
+            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha = %s ORDER BY fecha DESC", (today, ))
+
         accesos = cur.fetchall()
-        print(accesos)
+        print("resultados = ", accesos)
         cur.close()
         conn.close()
     except Exception as e:
-        flash("Error de conexion", "Warning") 
+        print("Error de conexion", {e})
+        flash("Error de conexion", "alert") 
     
     return render_template("index.html", accesos=accesos)
 
