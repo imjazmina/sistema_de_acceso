@@ -46,10 +46,10 @@
         <div class="registro-container col-6">
             <h2 class="pb-4">Bienvenido al Registro de Acceso al Datacenter</h2>
             <button class="btn btn-light justify-content-center col-6 p-2">
-                <a href="/index.html" class="text-decoration-none text-dark">Cargar Registro</a>
+                <a href="{{ url_for('registro') }}" class="text-decoration-none text-dark">Cargar Registro</a>
             </button>
             <button class="btn btn-light col-6 p-2 mt-2">
-                <a href="#" class="text-decoration-none text-dark">Consultar Registro</a>
+                <a href="{{ url_for('mostrar_registro') }}" class="text-decoration-none text-dark">Consultar Registro</a>
             </button>
         </div>
     </main>

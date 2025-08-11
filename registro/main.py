@@ -17,9 +17,14 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Ruta principal: muestra el formulario y los registros
-@app.route('/', methods=["GET"])
-def home():
+# Ruta principal: mensaje de bienvenida
+@app.route("/")
+def inicio():
+    return render_template("inicio.html")
+
+# Mostrar formulario
+@app.route('/mostrar-registro', methods=["GET"])
+def mostrar_registro():
     accesos=[]
     fecha_inicio = request.args.get("fecha_inicio") 
     fecha_fin = request.args.get("fecha_fin")
@@ -44,10 +49,12 @@ def home():
         cur.close()
         conn.close()
     except Exception as e:
-        print("Error de conexion", {e})
         flash("Error de conexion", "alert") 
-    
-    return render_template("index.html", accesos=accesos)
+    return render_template("mostrar_registro.html", accesos=accesos)
+
+@app.route("/registro", methods=["GET"])
+def registro():
+    return render_template("registro.html")
 
 # Ruta para guardar los datos del formulario
 @app.route("/crear-acceso", methods=["POST"])
@@ -99,11 +106,11 @@ def crear_acceso():
         # X
         if hora_entrada >= hora_salida:
             flash("La hora de entrada debe ser anterior a la hora de salida", "warning")
-            return render_template('formulario.html',  hora_entrada=hora_entrada, hora_salida=hora_salida)
+            return render_template(url_for("crear_acceso"))
 
         if not all([name, correo, motivo_ingreso, autorizante]):
             flash("Todos los campos obligatorios deben ser completados", "warning")
-            return redirect(url_for("home"))
+            return redirect(url_for("crear_acceso"))
         
         cur.execute("""
         INSERT INTO acceso (
@@ -123,7 +130,7 @@ def crear_acceso():
     except Exception as e:
         flash(f"Error al procesar el acceso {e}" , "danger")
    
-    return redirect("/")
+    return redirect(url_for("mostrar_registro"))
 
 #ruta para generar pdf de los registros
 @app.route("/crear-reporte", methods = ["GET"])
