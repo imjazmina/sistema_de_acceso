@@ -14,13 +14,14 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     canvas.width = rect.width;
     canvas.height = rect.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let hasDrawn= false;
+    hasDrawn = false;
   }
 
   modal.addEventListener('shown.bs.modal', () => {
     resizeCanvas();
   });
 
+  // ===== TOUCH events =====
   function getTouchPos(e) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -33,10 +34,9 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     e.preventDefault();
     const pos = getTouchPos(e);
     isDrawing = true;
-    let hasDrawn= true;
+    hasDrawn = true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
-    
   });
 
   canvas.addEventListener("touchmove", (e) => {
@@ -52,20 +52,57 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     ctx.closePath();
   });
 
+  // ===== MOUSE events =====
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  canvas.addEventListener("mousedown", (e) => {
+    const pos = getMousePos(e);
+    isDrawing = true;
+    hasDrawn = true;
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    if (!isDrawing) return;
+    const pos = getMousePos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  });
+
+  canvas.addEventListener("mouseup", () => {
+    isDrawing = false;
+    ctx.closePath();
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    if (isDrawing) {
+      isDrawing = false;
+      ctx.closePath();
+    }
+  });
+
+  // ===== BOTONES =====
   btnBorrar.addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let hasDrawn = false;
+    hasDrawn = false;
   });
 
   btnGuardar.addEventListener("click", () => {
-    if (!hasDrawn){
-      mostrarToast("Ingrese la firma")
+    if (!hasDrawn) {
+      mostrarToast("Ingrese la firma");
       return;
-    }else{
+    } else {
       const dataURL = canvas.toDataURL("image/png");
       input.value = dataURL;
 
-      // cerrar modal manualmente si todo fue bien
+      // cerrar modal
       const modalInstance = bootstrap.Modal.getInstance(modal);
       if (modalInstance) {
         modalInstance.hide();
@@ -73,6 +110,7 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     }
   });
 }
+
 
 // Inicializa canvas
 inicializarCanvasFirma({
