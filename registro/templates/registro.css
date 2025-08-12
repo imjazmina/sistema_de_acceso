@@ -1,7 +1,8 @@
 body {
 background-color: #ccc;
 }
-.container, .container-registro {
+
+main {
 background-color: #fff;
 margin: 20px auto;
 padding: 20px;

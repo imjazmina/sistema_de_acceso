@@ -45,7 +45,6 @@ def mostrar_registro():
             cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha = %s ORDER BY fecha DESC", (today, ))
 
         accesos = cur.fetchall()
-        print("resultados = ", accesos)
         cur.close()
         conn.close()
     except Exception as e:

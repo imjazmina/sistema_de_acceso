@@ -42,6 +42,7 @@
   </div>
     <!-- Bootstrap Toast Container Front-->
   <div class="toast-container position-fixed top-0 end-0 p-2" id="toast-container"></div>
+  <!--Form-->
     <div class="container col-6">
       <form method="post" action="/crear-acceso" enctype="multipart/form-data" autocomplete="off">
         <h2 class="mb-4">REGISTRO DE ACCESO A LA SALA DE SERVIDORES</h2>
@@ -147,9 +148,10 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="submit" class="btn btn-success">Enviar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>  
-        <a href="{{ url_for('generar_reporte') }}" class="btn btn-success" target="_blank">Generar Reporte</a>
+        <a href="{{ url_for('mostrar_registro') }}" class="text-decoration-none text-white text-decoration-none btn btn-primary">Consultar Registro</a>
+
       </div>
       </form>
   </div>

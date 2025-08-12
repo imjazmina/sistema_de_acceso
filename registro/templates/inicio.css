@@ -1,34 +1,10 @@
-body {
-    background-color: #ccc;
-}
-
-.main-container{ 
-    margin: 0 auto;
-    display: grid;
-    align-items: center;
-    height: 100vh;
-}
-
-.registro-container{
-    margin: 0 auto;
-    display: grid;
-    place-items: center;
-    background-color: white;
-    padding: 25px;
-    border-radius: 5%;
-}
-
-h2{
-    position: relative;
-    text-align: center;
+body{
+    background-color: #e1e1e1;
 }
 
 a{
     text-decoration: none;
     color: black;
-}
-
-.btn{
     border-radius: 5%;
     border: 1px solid black;
 }
