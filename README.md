@@ -1,13 +1,13 @@
 
 # 🏭 Sistema de Acceso
 
-Aplicación web desarrollada con **Python (Flask)** y **PostgreSQL**, que permite gestionar el acceso de personal a una fábrica o datacenter.
+Aplicación web desarrollada con **Python (Flask)** y **PostgreSQL**, que permite gestionar el acceso de personal a zonas criticas de  la empresa.
 
 ---
 
 ## 📦 Tecnologías usadas
 
-- Python 3.x
+- Python
 - Flask
 - HTML / CSS / JavaScript
 - PostgreSQL

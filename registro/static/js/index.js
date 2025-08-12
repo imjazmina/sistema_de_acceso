@@ -177,7 +177,6 @@ document.getElementById('btnAbrirModalAutorizante').addEventListener('click', ()
 });
 
 
-
 // Validar selección de radios autorizante
 const radiosAutorizante = document.getElementsByName('autorizante');
 radiosAutorizante.forEach(radio => {
@@ -198,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-//mostrar toast front
+// Mostrar toast front
 function mostrarToast(mensaje) {
   const toastContainer = document.getElementById('toast-container');
   const toastId = `toast-${Date.now()}`;
@@ -241,10 +240,10 @@ function limpiarFormulario() {
   }
 }
 
+//limpiar memoria del navegador
 const temporizador = 1*60*1000;
 let inactividadTimeout;
 let temporizadorIniciado = false;
-
 
 function limpiarmemoria(event) {
 
