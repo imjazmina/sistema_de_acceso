@@ -40,6 +40,7 @@ def mostrar_registro():
         cur = conn.cursor()
         if fecha_inicio and fecha_fin:
             cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha BETWEEN %s AND %s ORDER BY fecha DESC", (fecha_inicio, fecha_fin))
+           
         else:
             today = date.today()
             cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha = %s ORDER BY fecha DESC", (today, ))
