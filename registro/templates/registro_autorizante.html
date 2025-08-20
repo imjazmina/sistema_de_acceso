@@ -23,6 +23,27 @@
     </style>
 </head>
 <body>
+  <div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="toast align-items-center text-white bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body">
+                  {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-2" style="z-index: 1055;"></div>
+
     <div class="container">
       <form method="post" action="{{ url_for('paso2') }}" enctype="multipart/form-data" autocomplete="off" class="col-12">
         <div class="mb-3">
@@ -70,12 +91,12 @@
           <label for="observacion" class="form-label">Observaciones</label>
           <textarea class="form-control" id="observacion" name="observacion"></textarea>
         </div>
-        <button type="submit" class="btn btn-success ">Enviar</button>
+        <button type="submit" class="btn btn-success" id="btnEnviar">Enviar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>  
       </form>
     </div>
-        <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/utils.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/form_autorizante.js') }}" defer></script>
         
 </body>
-
 </html>

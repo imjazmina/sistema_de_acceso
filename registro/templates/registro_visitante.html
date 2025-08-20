@@ -84,10 +84,11 @@
               </div>
             </div>
         </div>
-        <a href="{{ url_for('paso2') }}" class="text-decoration-none text-white text-decoration-none btn btn-primary col-md-4 ">Aceptar</a>
+        <a href="{{ url_for('paso2') }}" id="btnGuardar" class="text-decoration-none text-white btn btn-primary col-md-4">Aceptar</a>
       </div>
       </form>
   </div>
-  <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/form_visitante.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
   </body>
   </html>
