@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, url_for, flash, make_response
+from flask import Flask, request, redirect, render_template, url_for, flash, make_response, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -22,42 +22,35 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def inicio():
     return render_template("inicio.html")
 
-# Mostrar formulario
-@app.route('/mostrar-registro', methods=["GET"])
-def mostrar_registro():
-    accesos=[]
-    fecha_inicio = request.args.get("fecha_inicio") 
-    fecha_fin = request.args.get("fecha_fin")
+#form primer paso
+@app.route("/paso1", methods=["GET", "POST"])
+def paso1():
+    if request.method == "POST":
+        session["paso1"] = {
+            "name": request.form["name"],
+            "email":request.form["email"], 
+            "firmavisitante":request.form["firmavisitante"]
+            }
+        return redirect(url_for("paso2"))
+    return render_template("registro_visitante.html")
 
-    try:
-        conn = psycopg2.connect(
-            database =os.getenv("DB_NAME"), 
-            user = os.getenv("DB_USER"), 
-            password= os.getenv("DB_PASSWORD"), 
-            host = os.getenv("DB_HOST"), 
-            port = os.getenv("DB_PORT")
-        )
-        cur = conn.cursor()
-        if fecha_inicio and fecha_fin:
-            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha BETWEEN %s AND %s ORDER BY fecha DESC", (fecha_inicio, fecha_fin))
-        else:
-            today = date.today()
-            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha = %s ORDER BY fecha DESC", (today, ))
-
-        accesos = cur.fetchall()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        flash("Error de conexion", "alert") 
-    return render_template("mostrar_registro.html", accesos=accesos)
-
-@app.route("/registro", methods=["GET"])
-def registro():
-    return render_template("registro.html")
+#form segundo paso
+@app.route("/paso2", methods=["GET", "POST"])
+def paso2():
+    if request.method == "POST":
+        session["paso1"] = {
+            "name": request.form["name"],
+            "email":request.form["email"], 
+            "firmavisitante":request.form["firmavisitante"]
+            }
+        return redirect(url_for(crear_acceso))
+    return render_template("registro_autorizante.html")
 
 # Ruta para guardar los datos del formulario
 @app.route("/crear-acceso", methods=["POST"])
 def crear_acceso():
+    paso1 = session.get("paso1")
+    paso = session.get("paso2")
     try:    # Crear nuevo acceso
     # Firma del autorizante (archivo)
         firmaautorizacion = request.form["firmaautorizacion"]
@@ -96,16 +89,18 @@ def crear_acceso():
 
         name = request.form["name"]
         correo = request.form["email"]
-        fecha = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
-        hora_entrada = datetime.strptime(request.form["timein"], '%H:%M').time()
-        hora_salida = datetime.strptime(request.form["timeout"], '%H:%M').time()
         motivo_ingreso = request.form["motivo"]
         autorizante = request.form["autorizante"]
         observacion = request.form["observacion"]
+
         # X
+        """
+        fecha = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
+        hora_entrada = datetime.strptime(request.form["timein"], '%H:%M').time()
+        hora_salida = datetime.strptime(request.form["timeout"], '%H:%M').time()
         if hora_entrada >= hora_salida:
             flash("La hora de entrada debe ser anterior a la hora de salida", "warning")
-            return render_template(url_for("crear_acceso"))
+            return render_template(url_for("crear_acceso"))"""
 
         if not all([name, correo, motivo_ingreso, autorizante]):
             flash("Todos los campos obligatorios deben ser completados", "warning")
@@ -113,16 +108,14 @@ def crear_acceso():
         
         cur.execute("""
         INSERT INTO acceso (
-            nombre, correo, fecha, hora_entrada, hora_salida,
-            motivo_ingreso, firma_visitante, autorizante, firma_autorizante, observacion
+            nombre, correo, motivo_ingreso, firma_visitante, autorizante, firma_autorizante, observacion
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            name, correo, fecha, hora_entrada, hora_salida,
-            motivo_ingreso, path_firma_visitante, autorizante, path_firma_autorizante, observacion
+        """,(
+            paso1["name"], paso1["email"],
+            paso2["motivo"], path_firma_visitante,
+            paso2["autorizante"], path_firma_autorizante, paso2["observacion"]
         ))
-
         conn.commit()
-
         cur.close()
         conn.close()
         flash("Acceso guardado", "success")
@@ -130,6 +123,37 @@ def crear_acceso():
         flash(f"Error al procesar el acceso {e}" , "danger")
    
     return redirect(url_for("mostrar_registro"))
+
+
+# Mostrar formulario
+@app.route('/mostrar-registro', methods=["GET"])
+def mostrar_registro():
+    accesos=[]
+    fecha_inicio = request.args.get("fecha_inicio") 
+    fecha_fin = request.args.get("fecha_fin")
+
+    try:
+        conn = psycopg2.connect(
+            database =os.getenv("DB_NAME"), 
+            user = os.getenv("DB_USER"), 
+            password= os.getenv("DB_PASSWORD"), 
+            host = os.getenv("DB_HOST"), 
+            port = os.getenv("DB_PORT")
+        )
+        cur = conn.cursor()
+        if fecha_inicio and fecha_fin:
+            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha BETWEEN %s AND %s ORDER BY fecha DESC", (fecha_inicio, fecha_fin))
+           
+        else:
+            today = date.today()
+            cur.execute("SELECT nombre, correo, fecha, hora_entrada, hora_salida, motivo_ingreso, autorizante FROM acceso WHERE fecha = %s ORDER BY fecha DESC", (today, ))
+
+        accesos = cur.fetchall()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        flash("Error de conexion", "alert") 
+    return render_template("mostrar_registro.html", accesos=accesos)
 
 #ruta para generar pdf de los registros
 @app.route("/crear-reporte", methods = ["GET"])

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-  <html lang="es">
+<html lang="en">
+<head>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +8,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script>
-    <title>Registro de acceso</title>
+    <title>Autorizante</title>
     <style>
       body {
         background-color: #ccc;
       }
-      .container, .container-registro {
+      .container{
         background-color: #fff;
-        margin: 20px auto;
         padding: 20px;
         border-radius: 8px;
+        max-width: 45%;
+        margin: 80px auto;
       }
     </style>
-  </head>
-  <body>
-    <!-- Bootstrap Toast Container Back-->
+</head>
+<body>
   <div aria-live="polite" aria-atomic="true" class="position-relative">
     <div class="toast-container position-fixed top-0 end-0 p-3">
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,81 +41,27 @@
       {% endwith %}
     </div>
   </div>
-    <!-- Bootstrap Toast Container Front-->
-  <div class="toast-container position-fixed top-0 end-0 p-2" id="toast-container"></div>
-  <!--Form-->
-    <div class="container col-6">
-      <form method="post" action="/crear-acceso" enctype="multipart/form-data" autocomplete="off">
-        <h2 class="mb-4">REGISTRO DE ACCESO A LA SALA DE SERVIDORES</h2>
 
-        <div class="mb-3">
-          <label for="name" class="form-label">Nombre completo</label>
-          <input type="text" class="form-control" id="name" name="name" required >
-        </div>
+  <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-2" style="z-index: 1055;"></div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">Correo</label>
-          <input type="email" class="form-control" id="email" name="email" required>
-        </div>
-
-        <div class="mb-3">
-          <label for="date" class="form-label">Fecha</label>
-          <input type="date" class="form-control" id="date" name="date" required>
-        </div>
-
-        <div class="mb-3">
-          <label for="timein" class="form-label">Hora de entrada</label>
-          <input type="time" class="form-control" id="timein" name="timein" required>
-        </div>
-
-        <div class="mb-3">
-          <label for="timeout" class="form-label">Hora de salida</label>
-          <input type="time" class="form-control" id="timeout" name="timeout" required>
-        </div>
-
-        <div class="mb-3">
-          <label for="motivo" class="form-label">Motivo de ingreso</label>
-          <textarea class="form-control" id="motivo" name="motivo" required></textarea>
-        </div>
-      <!--firma Visitante-->
-        <div class="mb-3">
-          <label for="firmavisitante" class="form-label">Firma del visitante</label> <br>
-          <input type="hidden" id="firmavisitante" name="firmavisitante">
-            <button type="button" class="btn btn-outline-secondary btn-lg col-12" id="btnAbrirModalVisitante">Ingresar firma</button>
-            <!--Modal-->
-            <div class="modal" id="modalVisitante">
-              <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h3 class="modal-title">Firma del visitante</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-
-                    <canvas id="canvaVisitante" class="col-12" style="background-color: #ccc;"></canvas>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btnBorrar"id="borrarVisit">Borrar</button> 
-                    <button type="button" class="btn btn-primary btnGuardar"  id="guardarVisit">Hecho</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          
-        </div>
-
+    <div class="container">
+      <form method="post" action="{{ url_for('paso2') }}" enctype="multipart/form-data" autocomplete="off" class="col-12">
         <div class="mb-3">
           <label class="form-label">Autorizado por</label><br>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="autorizante" id="autorizacion1" value="Opcion 1" required>
             <label class="form-check-label" for="autorizacion1">Opción 1</label>
-          </div>
+          </div>  
           <div class="form-check">
             <input class="form-check-input" type="radio" name="autorizante" id="autorizacion2" value="Opcion 2" required>
             <label class="form-check-label" for="autorizacion2">Opción 2</label>
           </div>
         </div>
-      <!--firma autorizacion-->
+        <div class="mb-3">
+          <label for="motivo" class="form-label">Motivo de ingreso</label>
+          <textarea class="form-control" id="motivo" name="motivo" required></textarea>
+        </div>
+        <!--firma autorizacion-->
         <div class="mb-3">
           <label for="firmaautorizacion" class="form-label">Firma de autorización</label>
           <input type="hidden" id="firmaautorizacion" name="firmaautorizacion">
@@ -140,21 +87,16 @@
             </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 ">
           <label for="observacion" class="form-label">Observaciones</label>
           <textarea class="form-control" id="observacion" name="observacion"></textarea>
-          <div class="form-text">
-            Documento que contiene los datos de las personas que acceden a sitios críticos de TI. 
-          </div>
         </div>
-
-        <button type="submit" class="btn btn-success">Enviar</button>
+        <button type="submit" class="btn btn-success" id="btnEnviar">Enviar</button>
         <button type="button" class="btn btn-secondary" onclick="limpiarFormulario()">Limpiar</button>  
-        <a href="{{ url_for('mostrar_registro') }}" class="text-decoration-none text-white text-decoration-none btn btn-primary">Consultar Registro</a>
-
-      </div>
       </form>
-  </div>
-  <script src="{{ url_for('static', filename='js/index.js') }}" defer></script>
-  </body>
-  </html>
+    </div>
+    <script src="{{ url_for('static', filename='js/utils.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/form_autorizante.js') }}" defer></script>
+        
+</body>
+</html>
