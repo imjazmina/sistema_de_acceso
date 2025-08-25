@@ -86,9 +86,15 @@ function todosLosCamposAutorizanteCompletos() {
   return radioChecked && motivo && firma;
 }
 
-document.getElementById('btnGuardar').addEventListener('click', (e) => {
-  if (!todosLosCamposAutorizanteCompletos()) {
-    e.preventDefault(); // Evita que redirija
-    mostrarToast('Por favor, complete todos los campos antes de continuar.');
+document.addEventListener("DOMContentLoaded", () => {
+  const btnEnviar = document.getElementById('btnEnviar');
+
+  if (btnEnviar) {
+    btnEnviar.addEventListener('click', (e) => {
+      if (!todosLosCamposAutorizanteCompletos()) {
+        e.preventDefault(); // Evita la navegación
+        mostrarToast('Por favor, complete todos los campos antes de continuar.');
+      }
+    });
   }
 });
