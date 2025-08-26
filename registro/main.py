@@ -38,12 +38,14 @@ def paso1():
 @app.route("/paso2", methods=["GET", "POST"])
 def paso2():
     if request.method == "POST":
-        session["paso1"] = {
+        session["paso2"] = {
             "name": request.form["name"],
-            "email":request.form["email"], 
-            "firmavisitante":request.form["firmavisitante"]
+            "motivo": request.form["motivo"],
+            "autorizante": request.form["autorizante"],
+            "firmavisitante":request.form["firmavisitante"],
+            "observacion": request.form.get("observacion", "")
             }
-        return redirect(url_for(crear_acceso))
+        return redirect(url_for("crear_acceso"))
     return render_template("registro_autorizante.html")
 
 # Ruta para guardar los datos del formulario
@@ -109,7 +111,7 @@ def crear_acceso():
         cur.execute("""
         INSERT INTO acceso (
             nombre, correo, motivo_ingreso, firma_visitante, autorizante, firma_autorizante, observacion
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, )
         """,(
             paso1["name"], paso1["email"],
             paso2["motivo"], path_firma_visitante,

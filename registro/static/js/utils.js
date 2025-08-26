@@ -1,4 +1,4 @@
-// Mostrar toast desde JS
+// utils.js para ambos pasos del formulario
 function mostrarToast(mensaje) {
   const toastContainer = document.getElementById('toast-container');
   const toastId = `toast-${Date.now()}`;
@@ -78,6 +78,39 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
   });
 
   canvas.addEventListener("touchend", () => {
+    isDrawing = false;
+    ctx.closePath();
+  });
+ function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+   canvas.addEventListener("mousedown", (e) => {
+    const pos = getMousePos(e);
+    isDrawing = true;
+    hasDrawn = true;
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    console.log(hasDrawn)
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    if (!isDrawing) return;
+    const pos = getMousePos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  });
+
+  canvas.addEventListener("mouseup", () => {
+    isDrawing = false;
+    ctx.closePath();
+  });
+
+  canvas.addEventListener("mouseleave", () => {
     isDrawing = false;
     ctx.closePath();
   });

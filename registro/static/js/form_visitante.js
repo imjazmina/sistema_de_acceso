@@ -1,3 +1,4 @@
+//formulario paso 1
 document.addEventListener("DOMContentLoaded", () => {
   // Inicializar canvas firma visitante
   inicializarCanvasFirma({
@@ -91,15 +92,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function todosLosCamposAutorizanteCompletos() 
-{ const radioChecked = Array.from(document.getElementsByName('autorizante')).some(r => r.checked); 
-  const motivo = document.getElementById('motivo')?.value.trim(); 
-  const firma = document.getElementById('firmaautorizacion')?.value; 
-  return radioChecked && motivo && firma;
+{ 
+  const nombre = document.getElementById('name')?.value.trim(); 
+  const correo = document.getElementById('email')?.value.trim(); 
+  const firma = document.getElementById('firmavisitante')?.value; 
+  return nombre && correo && firma;
  }  
 
-document.getElementById('btnGuardar').addEventListener('click', (e) => {
-  if (!todosLosCamposAutorizanteCompletos()) {
-    e.preventDefault(); // Evita que redirija
-    mostrarToast('Por favor, complete todos los campos antes de continuar.');
+document.addEventListener("DOMContentLoaded", () => {
+  const btnGuardar = document.getElementById('btnGuardar');
+
+  if (btnGuardar) {
+    btnGuardar.addEventListener('click', (e) => {
+      if (!todosLosCamposAutorizanteCompletos()) {
+        e.preventDefault(); // Evita la navegación
+        mostrarToast('Por favor, complete todos los campos antes de continuar.');
+      }
+    });
   }
 });
+
