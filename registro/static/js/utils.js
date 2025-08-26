@@ -125,7 +125,18 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
       mostrarToast("Ingrese la firma");
       return;
     }
+
+    const horaActual = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
     input.value = canvas.toDataURL("image/png");
+
+     if (inputId === 'firmavisitante') {
+    const inputHora = document.getElementById('horaEntrada');
+    if (inputHora) inputHora.value = horaActual;
+  } else if (inputId === 'firmaautorizacion') {
+    const inputHora = document.getElementById('horaSalida');
+    if (inputHora) inputHora.value = horaActual;
+  }
 
     const modalInstance = bootstrap.Modal.getInstance(modal);
     if (modalInstance) modalInstance.hide();

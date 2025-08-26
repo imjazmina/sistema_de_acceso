@@ -45,7 +45,7 @@
   <div class="toast-container position-fixed top-0 end-0 p-2 " id="toast-container"></div>
   <!--Form-->
    <div class="container">
-      <form method="post" action="{{ url_for('paso2') }}" enctype="multipart/form-data" autocomplete="off" class="col-12">
+      <form method="post" action="{{ url_for('paso1') }}" enctype="multipart/form-data" autocomplete="off" class="col-12">
         <h2 class="mb-4">REGISTRO DE ACCESO A LA SALA DE SERVIDORES</h2>
 
         <div class="mb-3">
@@ -83,8 +83,9 @@
                 </div>
               </div>
             </div>
+            <input type="hidden" name="hora_entrada" id="horaEntrada">
         </div>
-        <a href="{{ url_for('paso2') }}" id="btnGuardar" class="text-decoration-none text-white btn btn-primary col-md-4">Aceptar</a>
+        <button type="submit" class="btn btn-primary col-md-4" id="btnGuardar">Aceptar</button>
       </div>
       </form>
   </div>
