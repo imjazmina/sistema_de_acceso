@@ -95,7 +95,6 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     hasDrawn = true;
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
-    console.log(hasDrawn)
   });
 
   canvas.addEventListener("mousemove", (e) => {
@@ -120,25 +119,28 @@ function inicializarCanvasFirma({ canvasId, inputId, btnGuardarId, btnBorrarId, 
     hasDrawn = false;
   });
 
-  btnGuardar.addEventListener("click", () => {
-    if (!hasDrawn) {
-      mostrarToast("Ingrese la firma");
-      return;
-    }
+btnGuardar.addEventListener("click", () => {
+  if (!hasDrawn) {
+    mostrarToast("Ingrese la firma");
+    return;
+  }
 
-    const horaActual = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const horaActual = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const fechaHoy = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+  input.value = canvas.toDataURL("image/png");
 
-    input.value = canvas.toDataURL("image/png");
-
-     if (inputId === 'firmavisitante') {
+  if (inputId === 'firmavisitante') {
+    const inputFecha = document.getElementById('fechaFirma');
     const inputHora = document.getElementById('horaEntrada');
+    if (inputFecha) inputFecha.value = fechaHoy;
     if (inputHora) inputHora.value = horaActual;
+
   } else if (inputId === 'firmaautorizacion') {
     const inputHora = document.getElementById('horaSalida');
     if (inputHora) inputHora.value = horaActual;
   }
 
-    const modalInstance = bootstrap.Modal.getInstance(modal);
-    if (modalInstance) modalInstance.hide();
-  });
+  const modalInstance = bootstrap.Modal.getInstance(modal);
+  if (modalInstance) modalInstance.hide();
+});
 }

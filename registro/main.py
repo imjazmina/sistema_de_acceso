@@ -42,7 +42,8 @@ def paso1():
         session["paso1"] = {
             "name": request.form["name"],
             "email": request.form["email"],
-            "hora_entrada": request.form.get("horaEntrada"),
+            "hora_entrada": request.form.get("hora_entrada"),
+            "fechaFirma" : request.form.get("fechaFirma"),
             "firma_path": path_firma
         }
         session.permanent = True  # para mantener sesión viva
@@ -55,7 +56,6 @@ def paso1():
 def paso2():
     if "paso1" not in session:
         flash("Primero completa el paso 1", "warning")
-        print("paso1 incompleto")
         return redirect(url_for("paso1"))
      
     if request.method == "POST":
@@ -75,7 +75,7 @@ def paso2():
         session["paso2"] = {
             "autorizante": request.form["autorizante"],
             "motivo": request.form["motivo"],
-            "hora_salida": request.form.get("horaSalida"),
+            "hora_salida": request.form.get("hora_salida"),
             "observacion": request.form.get("observacion", ""),
             "firma_path": path_firma_autorizante
         }
@@ -89,22 +89,20 @@ def crear_acceso():
     paso1 = session.get("paso1")
     paso2 = session.get("paso2")
 
-    print("PASO 1:", paso1)
-    print("PASO 2:", paso2)
-
     if not paso1 or not paso2:
-        flash("Faltan datos del formulario", "danger")
-        print("Faltan datos del formulario")
+        flash("Error al cargar datos en el formulario", "danger")
         return redirect(url_for("paso1"))
 
     try:
         name = paso1["name"]
         email = paso1["email"]
         hora_entrada = paso1["hora_entrada"]
+        fecha = paso1["fechaFirma"] 
         firma_visitante = paso1["firma_path"]
         motivo = paso2["motivo"]
         autorizante = paso2["autorizante"]
         hora_salida = paso2["hora_salida"]
+
         observacion = paso2["observacion"]
         firma_autorizante = paso2["firma_path"]
 
@@ -121,10 +119,10 @@ def crear_acceso():
             INSERT INTO acceso (
                 nombre, correo, fecha, hora_entrada,
                 hora_salida, motivo_ingreso, firma_visitante, autorizante, firma_autorizante, observacion
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ) VALUES  (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            name, email, motivo, firma_visitante, hora_entrada,
-            hora_salida, autorizante, firma_autorizante, observacion
+            name, email, fecha, hora_entrada,
+    hora_salida, motivo, firma_visitante, autorizante, firma_autorizante, observacion
         ))
         conn.commit()
         cur.close()
@@ -139,7 +137,6 @@ def crear_acceso():
 
     except Exception as e:
         flash(f"Error al procesar el acceso: {e}", "danger")
-        print("Didntwork")
         return redirect(url_for("paso1"))
 
 
