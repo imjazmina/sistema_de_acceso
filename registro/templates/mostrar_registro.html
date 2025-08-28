@@ -96,7 +96,9 @@
 
       <!-- Botones: Reporte / Volver -->
       <div class="d-flex justify-content-center gap-3 mt-5">
-        <a href="{{ url_for('generar_reporte') }}" class="btn btn-success" target="_blank">Generar Reporte</a>
+        <a href="{{ url_for('generar_reporte', fecha_inicio=fecha_inicio, fecha_fin=fecha_fin) }}" class="btn btn-success" target="_blank">
+          Generar Reporte
+        </a>
         <a href="{{ url_for('paso1') }}" class="btn btn-outline-dark">Registro</a>
       </div>
 
