@@ -22,6 +22,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def inicio():
     return render_template("inicio.html")
 
+#Primer paso form visitante
 @app.route("/paso1", methods=["GET", "POST"])
 def paso1():
     if request.method == "POST":
@@ -64,6 +65,7 @@ def paso1():
 
     return render_template("registro_visitante.html")
 
+#Segundo paso form autorizante
 @app.route("/paso2", methods=["GET", "POST"])
 def paso2():
     if "paso1" not in session:
