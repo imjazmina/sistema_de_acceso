@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const camposOrden = ['name', 'email', 'firmavisitante'];
 
   function obtenerValor(id) {
-    return document.getElementById(id)?.value.trim();
+    return document.getElementById(id)?.value.trim();// trae los valores 
   }
 
   function mostrarNombreCampo(id) {

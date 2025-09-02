@@ -110,6 +110,9 @@ def paso2():
 
     return render_template("registro_autorizante.html")
 
+@app.route("/agendar-visita")
+def agendar_visita():
+    return render_template("registro_reserva.html")
 
 @app.route("/crear-acceso", methods=["GET", "POST"])
 def crear_acceso():
